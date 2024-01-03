@@ -2,6 +2,7 @@
 #include <vector>
 #include <thread>
 #include <cmath>
+#include <chrono>
 
 double sum = 0.0;
 double step;
@@ -38,6 +39,8 @@ int main() {
 
     step = 1.0 / static_cast<double>(num_steps);
 
+    auto start_time = std::chrono::high_resolution_clock::now();
+
     for (int i = 0; i < num_threads; ++i) {
         threads.emplace_back(calculatePI, i + 1, num_threads, num_steps);
     }
@@ -46,8 +49,12 @@ int main() {
         thread.join();
     }
 
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+
     double pi = step * sum;
     std::cout << "Obliczona wartoœæ liczby PI: " << pi << std::endl;
+    std::cout << "Czas obliczeñ: " << elapsed.count() << " sekund" << std::endl;
 
     return 0;
 }
